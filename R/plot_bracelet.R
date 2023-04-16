@@ -38,10 +38,3 @@ plot.bracelet <- function(start_nodes, end_nodes) {
   # Plot the nodes
   text(node_positions$x * text_scale, node_positions$y * text_scale, node_positions$node, cex = 1.5, col = "blue")
 }
-
-
-# Example usage:
-start_nodes <- c("Adam", "Adam", "B", "C", "Dog", "X", "Y", "Z")
-end_nodes <- c("B", "C", "Dog", "Dog", "E", "Y", "Z", "Adam")
-plot_directed_graph(start_nodes, end_nodes)
-

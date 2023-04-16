@@ -30,9 +30,3 @@ topological_sort <- function(start_nodes, end_nodes) {
   # Return the topologically sorted result
   return(result)
 }
-
-# Example usage:
-start_nodes <- c("A", "A", "B", "C", "D")
-end_nodes <- c("B", "C", "D", "D", "E")
-sorted_nodes <- topological_sort(start_nodes, end_nodes)
-print(sorted_nodes)

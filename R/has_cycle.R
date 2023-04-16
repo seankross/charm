@@ -39,9 +39,3 @@ has_cycle <- function(start_nodes, end_nodes) {
   # Return FALSE if no cycle is detected
   return(FALSE)
 }
-
-# Example usage:
-start_nodes <- c("A", "A", "B", "C", "D")
-end_nodes <- c("B", "C", "D", "D", "E")
-cycle_detected <- has_cycle(start_nodes, end_nodes)
-print(cycle_detected)
