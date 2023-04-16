@@ -1,3 +1,6 @@
+#' Start your charm bracelet from scratch
+#'
+#' @param path The path to a _charm.R file.
 #' @importFrom readr read_file
 #' @importFrom rlang parse_exprs
 #' @export

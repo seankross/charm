@@ -8,6 +8,5 @@
 
 library(testthat)
 library(charm)
-library(here)
 
 test_check("charm")

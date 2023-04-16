@@ -1,3 +1,10 @@
+#' Create a charm
+#'
+#' @param goal A file path.
+#' @param ingredients A vector of file paths (optional).
+#' @param instructions A vector of either paths to R files or R commands, which
+#' are strings that begin with a lowercase r and are followed by a space and
+#' an R command. Like inline R code in R Markdown.
 #' @export
 charm <- function(goal, ingredients = NULL, instructions){
   setup_charm(goal, ingredients, instructions, predicate = predicate_charm)
@@ -36,8 +43,12 @@ predicate_charm <- function(goal, ingredients) {
   any(ingredient_mod_times > min(goal_mod_times))
 }
 
-#' @export
-handle.charm <- function(x, envir) {
+handle.charm <- function(x, ...) {
+  args <- list(...)
+  if(!is.null(args$envir)) {
+    envir <- args$envir
+  }
+
   lapply(x$instructions, function(instruction) {
     if(instruction$type == "command") {
       parse_exprs(instruction$content) |>
@@ -54,7 +65,7 @@ handle.charm <- function(x, envir) {
 
 #' @importFrom cli cli_ul cli_text cli_li cli_end
 #' @export
-print.charm <- function(x){
+print.charm <- function(x, ...){
   cli_ul()
   cli_text("Goal:")
   cli_li(x$goal)

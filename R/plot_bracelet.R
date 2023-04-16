@@ -1,3 +1,4 @@
+#' @importFrom graphics arrows text
 plot.bracelet <- function(start_nodes, end_nodes) {
   # Create the adjacency list
   adj_list <- lapply(unique(c(start_nodes, end_nodes)), function(x) {
