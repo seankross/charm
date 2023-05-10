@@ -14,8 +14,10 @@ setup_charm <- function(goal = NULL, ingredients = NULL,
                         instructions = NULL, predicate = NULL) {
   instructions <- gsub("^[[:space:]]+|[[:space:]]+$", "", instructions) |>
     lapply(function(x) {
-      if(grepl("^r[[:space:]]+", x)) {
+      if (grepl("^r[[:space:]]+", x)) {
         list(type = "command", content = gsub("^r[[:space:]]+", "", x))
+      } else if (grepl("\\.[R|r]md$", x)) {
+        list(type = "rmd", content = x)
       } else {
         list(type = "file", content = x)
       }
@@ -43,6 +45,8 @@ predicate_charm <- function(goal, ingredients) {
   any(ingredient_mod_times > min(goal_mod_times))
 }
 
+#' @importFrom knitr purl
+#' @importFrom cli cli_abort
 handle.charm <- function(x, ...) {
   args <- list(...)
   if(!is.null(args$envir)) {
@@ -55,6 +59,23 @@ handle.charm <- function(x, ...) {
         lapply(eval, envir = envir)
     } else if(instruction$type == "file") {
       lapply(instruction$content, read_file) |>
+        lapply(parse_exprs) |>
+        unlist() |>
+        lapply(eval, envir = envir)
+    } else if(instruction$type == "rmd") {
+      file_names <- lapply(instruction$content,
+                           \(x) sub("([^.]+)\\.[[:alnum:]]+$", "\\1", x)) |> unlist()
+      r_files <- c(paste0(file_names, ".r"), paste0(file_names, ".R"))
+      existing_r_files <- r_files[file.exists(r_files)]
+
+      if (any(file.exists(r_files))) {
+        cli_abort("Rmd file already exists as R file: {existing_r_files}")
+      }
+
+      r_paths <- lapply(instruction$content, purl, documentation = 0) |> unlist()
+      on.exit(unlink(r_paths, force = TRUE))
+
+      lapply(r_paths, read_file) |>
         lapply(parse_exprs) |>
         unlist() |>
         lapply(eval, envir = envir)

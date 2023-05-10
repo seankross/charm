@@ -17,14 +17,14 @@ assemble <- function(path = here("_charm.R")) {
   }
 
   charms <- eval(exprs_split$at[[1]])
+  charmed <- c()
 
   no_ingredients <- Filter(\(x) is.null(x$ingredients), charms)
   yes_ingredients <- Filter(\(x) !is.null(x$ingredients), charms)
 
-  no_ingredients <- Filter(\(x) x$predicate(x$goal, x$ingredients), no_ingredients)
-  lapply(no_ingredients, handle, envir = global_env())
-
-  yes_ingredients <- Filter(\(x) x$predicate(x$goal, x$ingredients), yes_ingredients)
+  no_ingredients_eval <- Filter(\(x) x$predicate(x$goal, x$ingredients), no_ingredients)
+  lapply(no_ingredients_eval, handle, envir = global_env())
+  charmed <- no_ingredients |> lapply(\(x) x$goal) |> unlist() |> union(charmed)
 
   graph <- yes_ingredients |>
     lapply(\(x) list(from = rep(x$goal, length(x$ingredients)),
@@ -36,16 +36,18 @@ assemble <- function(path = here("_charm.R")) {
     cli_abort("Cycle detected in goals and ingredients.")
   }
 
-  goal_order <- topological_sort(start_nodes, end_nodes) |> rev()
+  goal_order <- setdiff(topological_sort(start_nodes, end_nodes) |> rev(), charmed)
   charm_index <- lapply(goal_order, function(x) {
     lapply(charms, function(y) {
       x %in% y$goal
     }) |> unlist() |> which()
   }) |> unlist()
 
-  yes_ingredients <- Filter(\(x) x$predicate(x$goal, x$ingredients),
-                            charms[charm_index])
-  lapply(yes_ingredients, handle, envir = global_env())
+  for (i in charm_index) {
+    if (charms[[i]]$predicate(charms[[i]]$goal, charms[[i]]$ingredients)) {
+      handle(charms[[i]], envir = global_env())
+    }
+  }
 
   if(!is.null(exprs_split$after)) {
     lapply(exprs_split$after, eval, envir = global_env())

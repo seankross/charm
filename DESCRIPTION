@@ -14,8 +14,10 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     cli,
+    fs,
     graphics,
     here,
+    knitr,
     readr,
     rlang
 RoxygenNote: 7.2.3
