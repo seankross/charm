@@ -50,18 +50,20 @@ predicate_charm <- function(goal, ingredients) {
 handle.charm <- function(x, ...) {
   args <- list(...)
   if(!is.null(args$envir)) {
-    envir <- args$envir
+    envir <- function() args$envir
+  } else {
+    envir <- parent.frame
   }
 
   lapply(x$instructions, function(instruction) {
     if(instruction$type == "command") {
       parse_exprs(instruction$content) |>
-        lapply(eval, envir = envir)
+        lapply(eval, envir = envir())
     } else if(instruction$type == "file") {
       lapply(instruction$content, read_file) |>
         lapply(parse_exprs) |>
         unlist() |>
-        lapply(eval, envir = envir)
+        lapply(eval, envir = envir())
     } else if(instruction$type == "rmd") {
       file_names <- lapply(instruction$content,
                            \(x) sub("([^.]+)\\.[[:alnum:]]+$", "\\1", x)) |> unlist()
@@ -78,7 +80,7 @@ handle.charm <- function(x, ...) {
       lapply(r_paths, read_file) |>
         lapply(parse_exprs) |>
         unlist() |>
-        lapply(eval, envir = envir)
+        lapply(eval, envir = envir())
     }
   })
   x$goal
@@ -91,9 +93,16 @@ print.charm <- function(x, ...){
   cli_text("Goal:")
   cli_li(x$goal)
   cli_end()
+
+  if(length(x$ingredients) > 0) {
+    cli_ul()
+    cli_text("Ingredients:")
+    cli_li(x$ingredients)
+    cli_end()
+  }
+
   cli_ul()
-  cli_text("Ingredients:")
-  cli_li(x$ingredients)
+  cli_text("Instructions:")
+  cli_li(x$instructions |> lapply(\(x) x$content) |> unlist())
   cli_end()
-  #cli_text("Instructions:")
 }

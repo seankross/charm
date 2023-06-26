@@ -4,10 +4,18 @@
 \alias{assemble}
 \title{Assemble your charm bracelet}
 \usage{
-assemble(path = here("_charm.R"))
+assemble(goals = NULL, path = here("_charm.R"))
 }
 \arguments{
-\item{path}{The path to a _charm.R file.}
+\item{goals}{Charms to be assembled in the \verb{_charm.R} file, specified by
+their respective goals. Charms can be specified with only the
+\code{\link[base:basename]{base::basename()}} of a goal for that charm if no other goals share the same
+\code{\link[base:basename]{base::basename()}}. Goals in charms that share a \code{\link[base:basename]{base::basename()}} with
+another goal can always be specified by the path to a goal. You only need to
+specify one goal in a charm for the charm to be assembled. The default value
+\code{NULL} indicates all charms should assembled (this is the default).}
+
+\item{path}{The path to a \verb{_charm.R} file.}
 }
 \description{
 Assemble your charm bracelet

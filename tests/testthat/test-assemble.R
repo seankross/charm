@@ -4,7 +4,7 @@ test_that("Assemble correctly makes charm bracelets 1", {
   file.copy(mtcf_dir, temp_dir, recursive = TRUE)
   temp_mtcf <- file.path(temp_dir, "mtcars-formaldehyde")
   Sys.setenv(CHARM_TEST_PATH = temp_mtcf)
-  assemble(file.path(temp_mtcf, "_charm.R"))
+  assemble(path = file.path(temp_mtcf, "_charm.R"))
   form <- file.path(temp_mtcf, "data", "Formaldehyde.csv")
   mt <- file.path(temp_mtcf, "data", "mtcars.csv")
   mtfo <- file.path(temp_mtcf, "data", "mtfo.txt")
@@ -21,7 +21,7 @@ test_that("Assemble correctly makes charm bracelets 2", {
   file.copy(mtcf_dir, temp_dir, recursive = TRUE)
   temp_mtcf <- file.path(temp_dir, "charms-out-of-order")
   Sys.setenv(CHARM_TEST_PATH = temp_mtcf)
-  assemble(file.path(temp_mtcf, "_charm.R"))
+  assemble(path = file.path(temp_mtcf, "_charm.R"))
   txt <- file.path(temp_mtcf, c("one.txt", "two.txt", "three.txt"))
   mt <- file.path(temp_mtcf, "mtcars.csv")
 
