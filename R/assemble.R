@@ -72,8 +72,8 @@ assemble <- function(goals = NULL, path = here("_charm.R")) {
   assembled <- no_ingredients |> lapply(\(x) x$goal) |> unlist() |> union(assembled)
 
   graph <- yes_ingredients |>
-    lapply(\(x) list(from = rep(x$goal, length(x$ingredients)),
-                     to = x$ingredients))
+    lapply(\(x) list(from = rep(x$goal, length(x$ingredients)) |> sort(),
+                     to = rep(x$ingredients, length(x$goal))))
   start_nodes <- graph |> lapply(\(x) x$from) |> unlist()
   end_nodes <- graph |> lapply(\(x) x$to) |> unlist()
 
@@ -86,7 +86,7 @@ assemble <- function(goals = NULL, path = here("_charm.R")) {
     lapply(charms, function(y) {
       x %in% y$goal
     }) |> unlist() |> which()
-  }) |> unlist()
+  }) |> unlist() |> unique()
 
   for (i in charm_index) {
     if (charms[[i]]$predicate(charms[[i]]$goal, charms[[i]]$ingredients)) {
