@@ -1,4 +1,5 @@
 test_that("Assemble correctly makes charm bracelets 1", {
+  skip_on_os("windows")
   temp_dir <- tempdir()
   mtcf_dir <- system.file("test", "mtcars-formaldehyde", package = "charm")
   file.copy(mtcf_dir, temp_dir, recursive = TRUE)
@@ -16,6 +17,7 @@ test_that("Assemble correctly makes charm bracelets 1", {
 })
 
 test_that("Assemble correctly makes charm bracelets 2", {
+  skip_on_os("windows")
   temp_dir <- tempdir()
   mtcf_dir <- system.file("test", "charms-out-of-order", package = "charm")
   file.copy(mtcf_dir, temp_dir, recursive = TRUE)
@@ -32,6 +34,7 @@ test_that("Assemble correctly makes charm bracelets 2", {
 })
 
 test_that("Assemble correctly makes charm bracelets 3", {
+  skip_on_os("windows")
   temp_dir <- tempdir()
   mtcf_dir <- system.file("test", "two-goals-two-ingredients", package = "charm")
   file.copy(mtcf_dir, temp_dir, recursive = TRUE)
